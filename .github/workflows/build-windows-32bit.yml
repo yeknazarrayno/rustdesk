@@ -1,0 +1,117 @@
+name: Build Windows 32-bit
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+    paths:
+      - "src/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "build.rs"
+      - "libs/**"
+      - ".github/workflows/build-windows-32bit.yml"
+
+env:
+  VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
+  VCPKG_COMMIT_ID: "9e593bb18ea69cc5095e012465dcd675a822ed0d"
+
+jobs:
+  build-windows-32bit:
+    name: Windows 32-bit (i686-pc-windows-msvc)
+    runs-on: windows-2022
+    steps:
+      - name: Free Disk Space (Windows)
+        uses: jlumbroso/free-disk-space@54081f138730dfa15788a46383842cd2f914a1be
+        with:
+          tool-cache: false
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: false
+          docker-images: true
+          swap-storage: false
+
+      - name: Export GitHub Actions cache environment variables
+        uses: actions/github-script@d7906e4ad0b1822421a7e6a35d5ca353c962f410
+        with:
+          script: |
+            core.exportVariable('ACTIONS_CACHE_URL', process.env.ACTIONS_CACHE_URL || '');
+            core.exportVariable('ACTIONS_RUNTIME_TOKEN', process.env.ACTIONS_RUNTIME_TOKEN || '');
+
+      - name: Checkout source code
+        uses: actions/checkout@34e114876b0b11c390a56381ad16ebd13914f8d5
+        with:
+          submodules: recursive
+
+      - name: Setup vcpkg with Github Actions binary cache
+        uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2
+        with:
+          vcpkgDirectory: /opt/artifacts/vcpkg
+          vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
+
+      - name: Install vcpkg dependencies
+        run: |
+          $VCPKG_ROOT/vcpkg install --x-install-root="$VCPKG_ROOT/installed"
+        shell: bash
+
+      - name: Install Rust toolchain (i686 target)
+        uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
+        with:
+          toolchain: stable
+          targets: i686-pc-windows-msvc
+
+      - name: Show version information
+        shell: bash
+        run: |
+          rustup -V
+          rustup toolchain list
+          rustup default
+          cargo -V
+          rustc -V
+
+      - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
+
+      - name: Build 32-bit release
+        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+        with:
+          command: build
+          args: --locked --release --target=i686-pc-windows-msvc
+
+      - name: Verify binary
+        shell: powershell
+        run: |
+          $exe = "target/i686-pc-windows-msvc/release/rustdesk.exe"
+          if (Test-Path $exe) {
+            $version = (Get-Item $exe).VersionInfo.FileVersion
+            $size = (Get-Item $exe).Length / 1MB
+            Write-Host "Binary found: $exe"
+            Write-Host "Version: $version"
+            Write-Host "Size: $size MB"
+          } else {
+            Write-Error "Binary not found at $exe"
+            exit 1
+          }
+
+      - name: Upload 32-bit Windows artifact
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: rustdesk-windows-32bit
+          path: target/i686-pc-windows-msvc/release/rustdesk.exe
+          retention-days: 30
+
+      - name: Create release (on tag push)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: target/i686-pc-windows-msvc/release/rustdesk.exe
+          name: RustDesk Windows 32-bit ${{ github.ref_name }}
+          body: |
+            32-bit Windows build for RustDesk
+            - Server: raynodesk.ir
+            - Custom public key included
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
