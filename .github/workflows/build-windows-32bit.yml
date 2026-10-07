@@ -80,8 +80,11 @@ jobs:
       - name: Set libsodium environment for 32-bit
         shell: bash
         run: |
-          echo "SODIUM_LIB_DIR=$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib" >> "$GITHUB_ENV"
+          LIB_DIR="$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib"
+          echo "SODIUM_LIB_DIR=$LIB_DIR" >> "$GITHUB_ENV"
           echo "SODIUM_SHARED=0" >> "$GITHUB_ENV"
+          # Add vcpkg lib dir to LIB so linker finds libsodium.lib
+          echo "LIB=$LIB_DIR;$LIB" >> "$GITHUB_ENV"
 
       - name: Create libsodium.lib symlink for linker
         shell: bash
@@ -91,6 +94,7 @@ jobs:
             cp "$LIB_DIR/sodium.lib" "$LIB_DIR/libsodium.lib"
             echo "Created libsodium.lib from sodium.lib"
           fi
+          ls -la "$LIB_DIR"/libsodium* "$LIB_DIR"/sodium* 2>/dev/null || true
 
       - name: Install Rust toolchain (i686 target)
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
