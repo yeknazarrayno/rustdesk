@@ -16,6 +16,7 @@ on:
 env:
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   VCPKG_COMMIT_ID: "9e593bb18ea69cc5095e012465dcd675a822ed0d"
+  VCPKG_TRIPLET: "x86-windows-static"
 
 jobs:
   build-windows-32bit:
@@ -50,11 +51,17 @@ jobs:
         with:
           vcpkgDirectory: /opt/artifacts/vcpkg
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
+          vcpkgTriplet: ${{ env.VCPKG_TRIPLET }}
 
       - name: Install vcpkg dependencies
         run: |
-          $VCPKG_ROOT/vcpkg install --x-install-root="$VCPKG_ROOT/installed"
+          $VCPKG_ROOT/vcpkg install --x-install-root="$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}"
         shell: bash
+
+      - name: Setup MSVC 32-bit environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x86
 
       - name: Install Rust toolchain (i686 target)
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
@@ -78,6 +85,9 @@ jobs:
         with:
           command: build
           args: --locked --release --target=i686-pc-windows-msvc
+        env:
+          VCPKG_ROOT: ${{ env.VCPKG_ROOT }}
+          VCPKG_TRIPLET: ${{ env.VCPKG_TRIPLET }}
 
       - name: Verify binary
         shell: powershell
