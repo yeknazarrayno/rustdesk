@@ -119,11 +119,11 @@ jobs:
       - name: Build 32-bit release
         shell: pwsh
         run: |
-          # Setup 32-bit MSVC environment
+          # Setup 32-bit MSVC environment AND build in same shell so env persists
           & "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x86
           
-          # Verify 32-bit linker
-          link.exe /? 2>&1 | Select-Object -First 1
+          # Verify 32-bit linker is now active
+          Write-Host "Linker: $(link.exe /? 2>&1 | Select-Object -First 1)"
           
           # Build with 32-bit target
           cargo build --locked --release --target=i686-pc-windows-msvc
