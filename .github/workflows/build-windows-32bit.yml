@@ -80,16 +80,19 @@ jobs:
       - name: Set libsodium environment for 32-bit
         shell: bash
         run: |
-          LIB_DIR="$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib"
+          # Use the vcpkg installed by the action, not VS's bundled one
+          VCPKG_ACTION_ROOT="C:/vcpkg"
+          LIB_DIR="$VCPKG_ACTION_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib"
           echo "SODIUM_LIB_DIR=$LIB_DIR" >> "$GITHUB_ENV"
           echo "SODIUM_SHARED=0" >> "$GITHUB_ENV"
           # Add vcpkg lib dir to LIB so linker finds libsodium.lib
           echo "LIB=$LIB_DIR;$LIB" >> "$GITHUB_ENV"
 
-      - name: Create libsodium.lib symlink for linker
+      - name: Create libsodium.lib for linker
         shell: bash
         run: |
-          LIB_DIR="$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib"
+          VCPKG_ACTION_ROOT="C:/vcpkg"
+          LIB_DIR="$VCPKG_ACTION_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib"
           if [ -f "$LIB_DIR/sodium.lib" ] && [ ! -f "$LIB_DIR/libsodium.lib" ]; then
             cp "$LIB_DIR/sodium.lib" "$LIB_DIR/libsodium.lib"
             echo "Created libsodium.lib from sodium.lib"
