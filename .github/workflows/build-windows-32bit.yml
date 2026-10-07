@@ -77,9 +77,11 @@ jobs:
         with:
           arch: x86
 
-      - name: Set SODIUM_LIB_DIR for 32-bit
+      - name: Set libsodium environment for 32-bit
         shell: bash
-        run: echo "SODIUM_LIB_DIR=$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib" >> "$GITHUB_ENV"
+        run: |
+          echo "SODIUM_LIB_DIR=$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib" >> "$GITHUB_ENV"
+          echo "SODIUM_STATIC=1" >> "$GITHUB_ENV"
 
       - name: Install Rust toolchain (i686 target)
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
