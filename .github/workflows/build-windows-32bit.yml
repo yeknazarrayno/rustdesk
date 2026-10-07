@@ -11,6 +11,7 @@ on:
       - "Cargo.lock"
       - "build.rs"
       - "libs/**"
+      - "vcpkg.json"
       - ".github/workflows/build-windows-32bit.yml"
 
 env:
@@ -49,13 +50,26 @@ jobs:
       - name: Setup vcpkg with Github Actions binary cache
         uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2
         with:
-          vcpkgDirectory: /opt/artifacts/vcpkg
+          vcpkgDirectory: C:\vcpkg
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
-          vcpkgTriplet: ${{ env.VCPKG_TRIPLET }}
 
       - name: Install vcpkg dependencies
+        env:
+          VCPKG_DEFAULT_HOST_TRIPLET: ${{ env.VCPKG_TRIPLET }}
         run: |
-          $VCPKG_ROOT/vcpkg install --x-install-root="$VCPKG_ROOT/installed/${{ env.VCPKG_TRIPLET }}"
+          if ! $VCPKG_ROOT/vcpkg \
+            install \
+            --triplet ${{ env.VCPKG_TRIPLET }} \
+            --x-install-root="$VCPKG_ROOT/installed"; then
+            find "${VCPKG_ROOT}/" -name "*.log" | while read -r _1; do
+              echo "$_1:"
+              echo "======"
+              cat "$_1"
+              echo "======"
+              echo ""
+            done
+            exit 1
+          fi
         shell: bash
 
       - name: Setup MSVC 32-bit environment
@@ -86,7 +100,7 @@ jobs:
           command: build
           args: --locked --release --target=i686-pc-windows-msvc
         env:
-          VCPKG_ROOT: ${{ env.VCPKG_ROOT }}
+          VCPKG_ROOT: C:\vcpkg
           VCPKG_TRIPLET: ${{ env.VCPKG_TRIPLET }}
 
       - name: Verify binary
