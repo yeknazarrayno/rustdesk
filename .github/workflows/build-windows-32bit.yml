@@ -117,13 +117,22 @@ jobs:
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
 
       - name: Build 32-bit release
-        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
-        with:
-          command: build
-          args: --locked --release --target=i686-pc-windows-msvc
+        shell: bash
+        run: |
+          # Setup 32-bit MSVC environment for this shell
+          call "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x86
+          
+          # Verify 32-bit linker
+          link.exe /? 2>&1 | head -1
+          
+          # Build with 32-bit target
+          cargo build --locked --release --target=i686-pc-windows-msvc
         env:
           VCPKG_ROOT: C:\vcpkg
           VCPKG_TRIPLET: ${{ env.VCPKG_TRIPLET }}
+          SODIUM_LIB_DIR: C:/vcpkg/installed/${{ env.VCPKG_TRIPLET }}/lib
+          SODIUM_SHARED: "0"
+          LIB: C:/vcpkg/installed/${{ env.VCPKG_TRIPLET }}/lib;${{ env.LIB }}
 
       - name: Verify binary
         shell: powershell
