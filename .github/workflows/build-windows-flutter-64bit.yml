@@ -241,41 +241,41 @@ jobs:
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
           pushd ./res/msi
-          python preprocess.py --arp -d ../../rustdesk
+          python preprocess.py --arp -d ../../raynodesk
           nuget restore msi.sln
           msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
           $msi = Get-ChildItem ./Package/bin/*/Release/en-us/Package.msi | Select-Object -First 1
-          mv $msi.FullName ../../SignOutput/rustdesk-${{ env.VERSION }}-x86_64.msi
-          sha256sum ../../SignOutput/rustdesk-*.msi
+          mv $msi.FullName ../../SignOutput/raynodesk-${{ env.VERSION }}-x86_64.msi
+          sha256sum ../../SignOutput/raynodesk-*.msi
 
       - name: Build pre-built MSI template
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
           git checkout -- res/msi
-          cp -r ./rustdesk ./rustdesk-msi-template
-          mv ./rustdesk-msi-template/rustdesk.exe ./rustdesk-msi-template/RDAPPNAM.exe
-          Set-Content -Path ./rustdesk-msi-template/custom.txt -Value 'placeholder' -NoNewline
-          $assets = './rustdesk-msi-template/data/flutter_assets/assets'
+          cp -r ./raynodesk ./raynodesk-msi-template
+          mv ./raynodesk-msi-template/raynodesk.exe ./raynodesk-msi-template/RDAPPNAM.exe
+          Set-Content -Path ./raynodesk-msi-template/custom.txt -Value 'placeholder' -NoNewline
+          $assets = './raynodesk-msi-template/data/flutter_assets/assets'
           New-Item -ItemType Directory -Force -Path $assets | Out-Null
           foreach ($a in 'icon.ico','icon.png','logo.png','logo_light.png','logo_dark.png') {
             Set-Content -Path "$assets/$a" -Value 'placeholder' -NoNewline
           }
           pushd ./res/msi
-          python preprocess.py --arp --template --revision-version 0 -d ../../rustdesk-msi-template --app-name RDAPPNAM
+          python preprocess.py --arp --template --revision-version 0 -d ../../raynodesk-msi-template --app-name RDAPPNAM
           msbuild msi.sln -t:clean -p:Configuration=Release -p:Platform=x64
           msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
           $msi = Get-ChildItem ./Package/bin/*/Release/en-us/Package.msi | Select-Object -First 1
           popd
           mkdir ./msi-template
-          mv $msi.FullName ./msi-template/rustdesk-template-x86_64.msi
+          mv $msi.FullName ./msi-template/raynodesk-template-x86_64.msi
           git checkout -- res/msi
-          rm -r -fo ./rustdesk-msi-template
+          rm -r -fo ./raynodesk-msi-template
 
       - name: Upload unsigned msi template
         if: env.UPLOAD_ARTIFACT == 'true'
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
-          name: rustdesk-unsigned-msi-template-x86_64
+          name: raynodesk-unsigned-msi-template-x86_64
           path: ./msi-template
 
       - name: Sign rustdesk self-extracted file
@@ -291,8 +291,8 @@ jobs:
           prerelease: true
           tag_name: ${{ env.TAG_NAME }}
           files: |
-            ./SignOutput/rustdesk-*.msi
-            ./SignOutput/rustdesk-*.exe
+            ./SignOutput/raynodesk-*.msi
+            ./SignOutput/raynodesk-*.exe
 
       - name: Verify build
         if: always()

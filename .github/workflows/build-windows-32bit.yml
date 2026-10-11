@@ -11,13 +11,11 @@ on:
       - "Cargo.lock"
       - "build.rs"
       - "libs/**"
-      - "vcpkg.json"
       - ".github/workflows/build-windows-32bit.yml"
 
 env:
   VCPKG_BINARY_SOURCES: "clear;x-gha,readwrite"
   VCPKG_COMMIT_ID: "9e593bb18ea69cc5095e012465dcd675a822ed0d"
-  VCPKG_TRIPLET: "x86-windows-static"
 
 jobs:
   build-windows-32bit:
@@ -50,54 +48,13 @@ jobs:
       - name: Setup vcpkg with Github Actions binary cache
         uses: lukka/run-vcpkg@b1a0dd252f06b9e25b3c022a9a03bd7a427fb6a2
         with:
-          vcpkgDirectory: C:\vcpkg
+          vcpkgDirectory: /opt/artifacts/vcpkg
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
 
       - name: Install vcpkg dependencies
-        env:
-          VCPKG_DEFAULT_HOST_TRIPLET: ${{ env.VCPKG_TRIPLET }}
         run: |
-          if ! $VCPKG_ROOT/vcpkg \
-            install \
-            --triplet ${{ env.VCPKG_TRIPLET }} \
-            --x-install-root="$VCPKG_ROOT/installed"; then
-            find "${VCPKG_ROOT}/" -name "*.log" | while read -r _1; do
-              echo "$_1:"
-              echo "======"
-              cat "$_1"
-              echo "======"
-              echo ""
-            done
-            exit 1
-          fi
+          $VCPKG_ROOT/vcpkg install --x-install-root="$VCPKG_ROOT/installed"
         shell: bash
-
-      - name: Setup MSVC 32-bit environment
-        uses: ilammy/msvc-dev-cmd@v1
-        with:
-          arch: x86
-
-      - name: Set libsodium environment for 32-bit
-        shell: bash
-        run: |
-          # Use the vcpkg installed by the action, not VS's bundled one
-          VCPKG_ACTION_ROOT="C:/vcpkg"
-          LIB_DIR="$VCPKG_ACTION_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib"
-          echo "SODIUM_LIB_DIR=$LIB_DIR" >> "$GITHUB_ENV"
-          echo "SODIUM_SHARED=0" >> "$GITHUB_ENV"
-          # Add vcpkg lib dir to LIB so linker finds libsodium.lib
-          echo "LIB=$LIB_DIR;$LIB" >> "$GITHUB_ENV"
-
-      - name: Create libsodium.lib for linker
-        shell: bash
-        run: |
-          VCPKG_ACTION_ROOT="C:/vcpkg"
-          LIB_DIR="$VCPKG_ACTION_ROOT/installed/${{ env.VCPKG_TRIPLET }}/lib"
-          if [ -f "$LIB_DIR/sodium.lib" ] && [ ! -f "$LIB_DIR/libsodium.lib" ]; then
-            cp "$LIB_DIR/sodium.lib" "$LIB_DIR/libsodium.lib"
-            echo "Created libsodium.lib from sodium.lib"
-          fi
-          ls -la "$LIB_DIR"/libsodium* "$LIB_DIR"/sodium* 2>/dev/null || true
 
       - name: Install Rust toolchain (i686 target)
         uses: dtolnay/rust-toolchain@e97e2d8cc328f1b50210efc529dca0028893a2d9
@@ -117,25 +74,10 @@ jobs:
       - uses: Swatinem/rust-cache@e18b497796c12c097a38f9edb9d0641fb99eee32
 
       - name: Build 32-bit release
-        shell: pwsh
-        run: |
-          # Setup 32-bit MSVC environment AND build in same shell so env persists
-          & "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Auxiliary/Build/vcvarsall.bat" x86
-          
-          # Verify 32-bit linker is now active
-          Write-Host "Linker: $(link.exe /? 2>&1 | Select-Object -First 1)"
-          
-          # Set 32-bit linker for i686 target (build script runs on host but needs 32-bit linker)
-          $env:CARGO_TARGET_I686_PC_WINDOWS_MSVC_LINKER = "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/HostX86/x86/link.exe"
-          
-          # Build with 32-bit target
-          cargo build --locked --release --target=i686-pc-windows-msvc
-        env:
-          VCPKG_ROOT: C:\vcpkg
-          VCPKG_TRIPLET: ${{ env.VCPKG_TRIPLET }}
-          SODIUM_LIB_DIR: C:/vcpkg/installed/${{ env.VCPKG_TRIPLET }}/lib
-          SODIUM_SHARED: "0"
-          LIB: C:/vcpkg/installed/${{ env.VCPKG_TRIPLET }}/lib;${{ env.LIB }}
+        uses: actions-rs/cargo@844f36862e911db73fe0815f00a4a2602c279505
+        with:
+          command: build
+          args: --locked --release --target=i686-pc-windows-msvc
 
       - name: Verify binary
         shell: powershell

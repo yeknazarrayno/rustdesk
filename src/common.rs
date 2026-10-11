@@ -1078,7 +1078,7 @@ pub fn get_app_name() -> String {
 
 #[inline]
 pub fn is_rustdesk() -> bool {
-    hbb_common::config::APP_NAME.read().unwrap().eq("RustDesk")
+    hbb_common::config::APP_NAME.read().unwrap().eq("RAYNODESK")
 }
 
 #[inline]
@@ -1165,7 +1165,7 @@ pub fn is_public(url: &str) -> bool {
         return false;
     };
     let host = host.strip_suffix('.').unwrap_or(host);
-    host == "rustdesk.com" || host.ends_with(".rustdesk.com")
+    host == "raynodesk.ir" || host.ends_with(".raynodesk.ir")
 }
 
 pub fn get_tcp_punch_enabled() -> bool {
@@ -2551,7 +2551,7 @@ pub fn get_builtin_option(key: &str) -> String {
 
 #[inline]
 pub fn is_custom_client() -> bool {
-    get_app_name() != "RustDesk"
+    get_app_name() != "RAYNODESK"
 }
 
 pub fn verify_login(_raw: &str, _id: &str) -> bool {
@@ -3153,12 +3153,12 @@ mod tests {
         assert!(is_public("https://API.RUSTDESK.COM/v1"));
         assert!(is_public("https://rustdesk.com/path"));
 
-        // Test URLs ending with "rustdesk.com"
-        assert!(is_public("rustdesk.com"));
-        assert!(is_public("https://rustdesk.com"));
-        assert!(is_public("https://RustDesk.com"));
-        assert!(is_public("http://www.rustdesk.com"));
-        assert!(is_public("https://api.rustdesk.com"));
+        // Test URLs ending with "raynodesk.ir"
+        assert!(is_public("raynodesk.ir"));
+        assert!(is_public("https://raynodesk.ir"));
+        assert!(is_public("https://RAynodesk.ir"));
+        assert!(is_public("http://www.raynodesk.ir"));
+        assert!(is_public("https://api.raynodesk.ir"));
 
         // Test non-public URLs
         assert!(!is_public("https://example.com"));
