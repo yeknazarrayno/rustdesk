@@ -151,6 +151,8 @@ jobs:
 
       - name: Build rustdesk
         run: |
+          # Patch build.py to remove --locked flag for CI
+          sed -i 's/cargo build --locked/cargo build/g' build.py
           # Build RustDesk with Flutter, portable, hwcodec, vram
           python3 .\build.py --portable --flutter --skip-portable-pack --hwcodec --vram
           mv ./flutter/build/windows/x64/runner/Release ./rustdesk
