@@ -233,7 +233,7 @@ class PlatformFFI {
       await _ffiBind.mainSetHomeDir(home: _homeDir);
       await _ffiBind.mainInit(
         appDir: _dir,
-        customClientConfig: '',
+        customClientConfig: '{"conn-type": "outgoing"}',
       );
     } catch (e) {
       debugPrintStack(label: 'initialize failed: $e');
