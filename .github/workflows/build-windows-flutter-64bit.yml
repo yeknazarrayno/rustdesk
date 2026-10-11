@@ -227,10 +227,10 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          python3 ./generate.py -f ../../raynodesk/ -o . -e ../../raynodesk/raynodesk.exe
           popd
           mkdir -p ./SignOutput
-          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/rustdesk-${{ env.VERSION }}-x86_64.exe
+          mv ./target/release/raynodesk-portable-packer.exe ./SignOutput/raynodesk-${{ env.VERSION }}-x86_64.exe
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@6fb02220983dee41ce7ae257b6f4d8f9bf5ed4ce # v2
@@ -298,7 +298,7 @@ jobs:
         if: always()
         shell: powershell
         run: |
-          $exe = "rustdesk/rustdesk.exe"
+          $exe = "raynodesk/raynodesk.exe"
           if (Test-Path $exe) {
             $version = (Get-Item $exe).VersionInfo.FileVersion
             $size = (Get-Item $exe).Length / 1MB
