@@ -125,7 +125,7 @@ jobs:
           vcpkgGitCommitId: ${{ env.VCPKG_COMMIT_ID }}
           doNotCache: false
 
-- name: Install vcpkg dependencies
+      - name: Install vcpkg dependencies
         env:
           VCPKG_DEFAULT_HOST_TRIPLET: x64-windows-static
         run: |
