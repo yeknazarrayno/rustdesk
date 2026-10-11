@@ -145,10 +145,6 @@ jobs:
           head -n 100 "${VCPKG_ROOT}/buildtrees/ffmpeg/build-x64-windows-static-rel.out.log" || true
         shell: bash
 
-      - name: Update Cargo.lock
-        run: cargo update
-        shell: bash
-
       - name: Build rustdesk
         run: |
           # Patch build.py to remove --locked flag for CI
