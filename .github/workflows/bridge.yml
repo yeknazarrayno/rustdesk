@@ -25,14 +25,6 @@ jobs:
               flutter-version: "3.22.3",
               artifact-name: "bridge-artifact",
             }
-          # Bridge for Flutter 3.24.5 (Windows x64)
-          - {
-              target: x86_64-unknown-linux-gnu,
-              os: ubuntu-22.04,
-              extra-build-args: "",
-              flutter-version: "3.24.5",
-              artifact-name: "bridge-artifact-flutter-3.24",
-            }
           # Dedicated bridge for the Windows arm64 build (Flutter 3.44); runs in parallel.
           - {
               target: x86_64-unknown-linux-gnu,
