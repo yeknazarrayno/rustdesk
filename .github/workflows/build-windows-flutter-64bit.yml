@@ -295,6 +295,8 @@ jobs:
           files: |
             ./SignOutput/raynodesk-*.msi
             ./SignOutput/raynodesk-*.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Verify build
         if: always()
