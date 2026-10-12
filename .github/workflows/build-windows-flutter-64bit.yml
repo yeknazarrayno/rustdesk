@@ -63,7 +63,7 @@ jobs:
               platform: x64,
             }
     with:
-      upload-artifact: ${{ env.UPLOAD_ARTIFACT }}
+      upload-artifact: ${{ inputs.upload-artifact || 'true' }}
       target: ${{ matrix.job.target }}
       configuration: Release
       platform: ${{ matrix.job.platform }}
