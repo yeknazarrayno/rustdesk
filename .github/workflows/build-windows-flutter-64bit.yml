@@ -45,8 +45,8 @@ env:
   ARMV7_VCPKG_COMMIT_ID: "6f29f12e82a8293156836ad81cc9bf5af41fe836"
   VERSION: "1.5.0"
   NDK_VERSION: "r28c"
-  UPLOAD_ARTIFACT: ${{ inputs.upload-artifact || 'true' }}
-  TAG_NAME: ${{ inputs.tag-name || 'nightly' }}
+  UPLOAD_ARTIFACT: "true"
+  TAG_NAME: "nightly"
 
 jobs:
   generate-bridge:
@@ -63,7 +63,7 @@ jobs:
               platform: x64,
             }
     with:
-      upload-artifact: ${{ inputs.upload-artifact || 'true' }}
+      upload-artifact: true
       target: ${{ matrix.job.target }}
       configuration: Release
       platform: ${{ matrix.job.platform }}
