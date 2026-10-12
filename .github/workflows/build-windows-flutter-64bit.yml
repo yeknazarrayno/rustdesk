@@ -242,9 +242,9 @@ jobs:
       - name: Build msi
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
-pushd ./res/msi
-    python preprocess.py --arp -d ../../raynodesk --app-name raynodesk
-    nuget restore msi.sln
+          pushd ./res/msi
+          python preprocess.py --arp -d ../../raynodesk --app-name raynodesk
+          nuget restore msi.sln
           msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10
           $msi = Get-ChildItem ./Package/bin/*/Release/en-us/Package.msi | Select-Object -First 1
           mv $msi.FullName ../../SignOutput/raynodesk-${{ env.VERSION }}-x86_64.msi
