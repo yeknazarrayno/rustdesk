@@ -11,6 +11,18 @@ on:
         description: "Release tag name"
         type: string
         default: "nightly"
+  push:
+    branches:
+      - master
+    paths:
+      - "src/**"
+      - "Cargo.toml"
+      - "Cargo.lock"
+      - "build.rs"
+      - "libs/**"
+      - "flutter/**"
+      - "res/**"
+      - ".github/workflows/build-windows-flutter-64bit.yml"
 
 permissions:
   contents: write
