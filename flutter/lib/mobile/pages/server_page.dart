@@ -61,13 +61,13 @@ class _DropDownAction extends StatelessWidget {
           final isAllowNumericOneTimePassword =
               gFFI.serverModel.allowNumericOneTimePassword;
           return [
-            if (!isChangeIdDisabled())
+            if (!incomingOnly && !isChangeIdDisabled())
               PopupMenuItem(
                 enabled: gFFI.serverModel.connectStatus > 0,
                 value: "changeID",
                 child: Text(translate("Change ID")),
               ),
-            if (!isChangeIdDisabled()) const PopupMenuDivider(),
+            if (!incomingOnly && !isChangeIdDisabled()) const PopupMenuDivider(),
             PopupMenuItem(
               value: 'AcceptSessionsViaPassword',
               child: listTile(
@@ -463,6 +463,7 @@ class ServerInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serverModel = Provider.of<ServerModel>(context);
+    final incomingOnly = bind.isIncomingOnly();
 
     const Color colorPositive = Colors.green;
     const Color colorNegative = Colors.red;
@@ -503,6 +504,9 @@ class ServerInfo extends StatelessWidget {
 
     final showOneTime = serverModel.approveMode != 'click' &&
         serverModel.verificationMethod != kUsePermanentPassword;
+    if (incomingOnly) {
+      return const SizedBox.shrink();
+    }
     return PaddingCard(
         title: translate('Your Device'),
         child: Column(

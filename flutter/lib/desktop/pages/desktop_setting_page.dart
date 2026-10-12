@@ -984,6 +984,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
   @override
   Widget build(BuildContext context) {
     super.build(context);
+    final incomingOnly = bind.isIncomingOnly();
     return SingleChildScrollView(
         controller: scrollController,
         child: Column(
@@ -998,7 +999,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
                 permissions(context),
                 password(context),
                 _Card(title: '2FA', children: [tfa()]),
-                if (!isChangeIdDisabled())
+                if (!incomingOnly && !isChangeIdDisabled())
                   _Card(title: 'ID', children: [changeId()]),
                 more(context),
               ]),
