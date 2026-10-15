@@ -75,6 +75,9 @@ void showServerSettingsWithValue(
   final apiCtrl = TextEditingController(text: serverConfig.apiServer);
   final keyCtrl = TextEditingController(text: serverConfig.key);
 
+  final idReadOnly = true;
+  final keyReadOnly = true;
+
   RxString idServerMsg = ''.obs;
   RxString relayServerMsg = ''.obs;
   RxString apiServerMsg = ''.obs;
@@ -107,7 +110,7 @@ void showServerSettingsWithValue(
 
     Widget buildField(
         String label, TextEditingController controller, String errorMsg,
-        {String? Function(String?)? validator, bool autofocus = false}) {
+        {String? Function(String?)? validator, bool autofocus = false, bool readOnly = false}) {
       if (isDesktop || isWeb) {
         return Row(
           children: [
@@ -126,6 +129,7 @@ void showServerSettingsWithValue(
                 showLabelText: false,
                 validator: validator,
                 autofocus: autofocus,
+                readOnly: readOnly,
               ).workaroundFreezeLinuxMint(),
             ),
           ],
@@ -137,6 +141,7 @@ void showServerSettingsWithValue(
         controller: controller,
         errorMsg: errorMsg,
         validator: validator,
+        readOnly: readOnly,
       ).workaroundFreezeLinuxMint();
     }
 
@@ -154,7 +159,7 @@ void showServerSettingsWithValue(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   buildField(translate('ID Server'), idCtrl, idServerMsg.value,
-                      autofocus: true),
+                      autofocus: true, readOnly: idReadOnly),
                   SizedBox(height: 8),
                   if (!isIOS && !isWeb) ...[
                     buildField(translate('Relay Server'), relayCtrl,
@@ -176,7 +181,7 @@ void showServerSettingsWithValue(
                     },
                   ),
                   SizedBox(height: 8),
-                  buildField('Key', keyCtrl, ''),
+                  buildField('Key', keyCtrl, '', readOnly: keyReadOnly),
                   if (isInProgress)
                     Padding(
                       padding: EdgeInsets.only(top: 8),
@@ -214,18 +219,19 @@ TextFormField serverSettingsTextFormField({
   String? Function(String?)? validator,
   bool autofocus = false,
   bool showLabelText = true,
+  bool readOnly = false,
   EdgeInsetsGeometry? contentPadding,
 }) {
   return TextFormField(
     controller: controller,
+    readOnly: readOnly,
     decoration: InputDecoration(
-      labelText: showLabelText ? label : null,
-      errorText: errorMsg.isEmpty ? null : errorMsg,
-      contentPadding: contentPadding,
+      border: Underline.none,
     ),
+    contentPadding: contentPadding,
     validator: validator,
     autofocus: autofocus,
-    keyboardType: TextInputType.visiblePassword,
+    keyboardType:visiblePassword,
     textCapitalization: TextCapitalization.none,
     autocorrect: false,
     enableSuggestions: false,

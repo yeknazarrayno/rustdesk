@@ -55,11 +55,11 @@ class _DesktopHomePageState extends State<DesktopHomePage>
 
   final GlobalKey _childKey = GlobalKey();
 
-  @override
-Widget build(BuildContext context) {
+@override
+  Widget build(BuildContext context) {
     super.build(context);
     return _buildBlock(
-        child: buildLeftPane(context),
+        child: buildRightPane(context),
     );
   }
 
