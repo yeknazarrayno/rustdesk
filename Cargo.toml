@@ -1,10 +1,10 @@
 [package]
 name = "raynodesk"
 version = "1.5.0"
-authors = ["RAYNODESK <info@raynodesk.ir>"]
+authors = ["RAYNODesk <info@raynodesk.ir>"]
 edition = "2021"
 build= "build.rs"
-description = "RAYNODESK Remote Desktop"
+description = "RAYNODesk Remote Desktop"
 default-run = "raynodesk"
 rust-version = "1.75"
 
@@ -255,8 +255,8 @@ webrtc-sctp = { git = "https://github.com/rustdesk-org/webrtc", rev = "49c89bd8d
 
 [package.metadata.winres]
 LegalCopyright = "Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved."
-ProductName = "RAYNODESK"
-FileDescription = "RAYNODESK Remote Desktop"
+ProductName = "RAYNODesk"
+FileDescription = "RAYNODesk Remote Desktop"
 OriginalFilename = "raynodesk.exe"
 
 [target.'cfg(target_os="windows")'.build-dependencies]
@@ -274,7 +274,7 @@ docopt = "1.1"
 tokio = { version = "1.44", features = ["test-util"] }
 
 [package.metadata.bundle]
-name = "RAYNODESK"
+name = "RAYNODesk"
 identifier = "com.raynodesk.raynodesk"
 icon = ["res/32x32.png", "res/128x128.png", "res/128x128@2x.png"]
 osx_minimum_system_version = "10.14"

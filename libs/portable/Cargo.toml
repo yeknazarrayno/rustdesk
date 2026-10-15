@@ -2,7 +2,7 @@
 name = "raynodesk-portable-packer"
 version = "1.5.0"
 edition = "2021"
-description = "RAYNODESK Remote Desktop"
+description = "RAYNODesk Remote Desktop"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -27,9 +27,9 @@ native-windows-gui = {version = "1.0", default-features = false, features = ["an
 
 [package.metadata.winres]
 LegalCopyright = "Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved."
-ProductName = "RAYNODESK"
+ProductName = "RAYNODesk"
 OriginalFilename = "raynodesk.exe"
-FileDescription = "RAYNODESK Remote Desktop"
+FileDescription = "RAYNODesk Remote Desktop"
 #ProductVersion = ""
 
 [target.'cfg(target_os="windows")'.build-dependencies]
