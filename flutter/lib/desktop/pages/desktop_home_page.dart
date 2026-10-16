@@ -372,7 +372,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                             ),
                           ),
                           onTap: () => DesktopSettingPage.switch2page(
-                              SettingsTabKey.safety),
+                              SettingsTabKey.general),
                           onHover: (value) => editHover.value = value,
                         ),
                     ],
