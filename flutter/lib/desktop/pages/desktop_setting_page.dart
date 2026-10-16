@@ -50,11 +50,7 @@ class _TabInfo {
 
 enum SettingsTabKey {
   general,
-  safety,
   display,
-  account,
-  printer,
-  about,
 }
 
 class DesktopSettingPage extends StatefulWidget {
@@ -62,18 +58,7 @@ class DesktopSettingPage extends StatefulWidget {
   static final List<SettingsTabKey> tabKeys = [
     if (bind.mainGetBuildinOption(key: kOptionHideGeneralSetting) != 'Y')
       SettingsTabKey.general,
-    if (!isWeb &&
-        !bind.isOutgoingOnly() &&
-        !bind.isDisableSettings() &&
-        bind.mainGetBuildinOption(key: kOptionHideSecuritySetting) != 'Y')
-      SettingsTabKey.safety,
     if (!bind.isIncomingOnly()) SettingsTabKey.display,
-    if (!bind.isDisableAccount()) SettingsTabKey.account,
-    if (isWindows &&
-        !bind.isDisableSettings() &&
-        bind.mainGetBuildinOption(key: kOptionHideRemotePrinterSetting) != 'Y')
-      SettingsTabKey.printer,
-    SettingsTabKey.about,
   ];
 
   DesktopSettingPage({Key? key, required this.initialTabkey}) : super(key: key);
@@ -216,20 +201,8 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
         case SettingsTabKey.general:
           children.add(const _General());
           break;
-        case SettingsTabKey.safety:
-          children.add(const _Safety());
-          break;
         case SettingsTabKey.display:
           children.add(const _Display());
-          break;
-        case SettingsTabKey.account:
-          children.add(const _Account());
-          break;
-        case SettingsTabKey.printer:
-          children.add(const _Printer());
-          break;
-        case SettingsTabKey.about:
-          children.add(const _About());
           break;
       }
     }
@@ -852,21 +825,21 @@ class _GeneralState extends State<_General> {
       keys.insert(0, defaultOptionLang);
       values.insert(0, translate('Default'));
       String currentKey = bind.mainGetLocalOption(key: kCommConfKeyLang);
-      if (!keys.contains(currentKey)) {
-        currentKey = defaultOptionLang;
+      if (!keys.contains(currentKey) || currentKey == defaultOptionLang || currentKey.isEmpty) {
+        currentKey = "fa";
       }
       final isOptFixed = isOptionFixed(kCommConfKeyLang);
       return ComboBox(
         keys: keys,
         values: values,
-        initialKey: currentKey,
+        initialKey: "fa",
         onChanged: (key) async {
-          await bind.mainSetLocalOption(key: kCommConfKeyLang, value: key);
+          await bind.mainSetLocalOption(key: kCommConfKeyLang, value: "fa");
           if (isWeb) reloadCurrentWindow();
           if (!isWeb) reloadAllWindows();
           if (!isWeb) bind.mainChangeLanguage(lang: key);
         },
-        enabled: !isOptFixed,
+        enabled: false,
       ).marginOnly(left: _kContentHMargin);
     });
   }
@@ -3014,7 +2987,7 @@ void changeSocks5Proxy() async {
                     ),
                     controller: proxyController,
                     autofocus: true,
-                    enabled: !isOptFixed,
+                    enabled: false,
                   ).workaroundFreezeLinuxMint(),
                 ),
               ],
@@ -3034,7 +3007,7 @@ void changeSocks5Proxy() async {
                     decoration: InputDecoration(
                       labelText: isMobile ? translate('Username') : null,
                     ),
-                    enabled: !isOptFixed,
+                    enabled: false,
                   ).workaroundFreezeLinuxMint(),
                 ),
               ],
@@ -3059,7 +3032,7 @@ void changeSocks5Proxy() async {
                                     ? Icons.visibility_off
                                     : Icons.visibility))),
                         controller: pwdController,
-                        enabled: !isOptFixed,
+                        enabled: false,
                         maxLength: bind.mainMaxEncryptLen(),
                       ).workaroundFreezeLinuxMint()),
                 ),
