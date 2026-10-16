@@ -51,7 +51,6 @@ class _TabInfo {
 enum SettingsTabKey {
   general,
   safety,
-  network,
   display,
   account,
   printer,
@@ -68,8 +67,6 @@ class DesktopSettingPage extends StatefulWidget {
         !bind.isDisableSettings() &&
         bind.mainGetBuildinOption(key: kOptionHideSecuritySetting) != 'Y')
       SettingsTabKey.safety,
-    if (false)
-      
     if (!bind.isIncomingOnly()) SettingsTabKey.display,
     if (!bind.isDisableAccount()) SettingsTabKey.account,
     if (isWindows &&
@@ -191,10 +188,6 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
           settingTabs.add(_TabInfo(tab, 'Security',
               Icons.enhanced_encryption_outlined, Icons.enhanced_encryption));
           break;
-        case SettingsTabKey.network:
-          settingTabs
-              
-          break;
         case SettingsTabKey.display:
           settingTabs.add(_TabInfo(tab, 'Display',
               Icons.desktop_windows_outlined, Icons.desktop_windows));
@@ -225,8 +218,6 @@ class _DesktopSettingPageState extends State<DesktopSettingPage>
           break;
         case SettingsTabKey.safety:
           children.add(const _Safety());
-          break;
-        
           break;
         case SettingsTabKey.display:
           children.add(const _Display());
@@ -883,14 +874,14 @@ class _GeneralState extends State<_General> {
   // How long an already-connected relay is held back to give the direct WebRTC
   // attempt a chance to win. It only means anything while WebRTC is on, so it
   // follows the checkbox as an indented sub-option and is hidden outright when
-  // the box is clear — the shape `directIp` uses for its port.
+  // the box is clear - the shape `directIp` uses for its port.
   List<Widget> webrtcOptions(BuildContext context) {
     final stored = bind.mainGetLocalOption(key: kOptionRelayFallbackDelay);
     final controller = TextEditingController(text: stored);
     // What the field holds against what is saved. Apply is offered only while
     // the two differ, so an untouched field shows no button at all, and neither
     // does one typed back to its saved value or cleared when nothing was saved
-    // — the state an "edited" flag alone would still call dirty.
+    // - the state an "edited" flag alone would still call dirty.
     final typed = RxString(stored);
     final saved = RxString(stored);
     return [
