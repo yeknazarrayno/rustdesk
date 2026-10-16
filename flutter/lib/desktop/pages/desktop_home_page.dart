@@ -50,15 +50,13 @@ class _DesktopHomePageState extends State<DesktopHomePage>
   Timer? _updateTimer;
   bool isCardClosed = false;
 
-  final RxBool _editHover = false.obs;
-  final RxBool _block = false.obs;
+final RxBool _block = false.obs;
 
   final GlobalKey _childKey = GlobalKey();
 
-@override
+  @override
   Widget build(BuildContext context) {
     super.build(context);
-    final isIncomingOnly = bind.isIncomingOnly();
     return _buildBlock(
       child: buildLeftPane(context),
     );
@@ -105,7 +103,6 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         },
       ),
     ];
-    final textColor = Theme.of(context).textTheme.titleLarge?.color;
     return ChangeNotifierProvider.value(
       value: gFFI.serverModel,
       child: Container(
