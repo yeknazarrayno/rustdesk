@@ -118,15 +118,6 @@ final RxBool _block = false.obs;
                 ),
               ),
             ),
-            OnlineStatusWidget(
-              onSvcStatusChanged: () {
-                if (isInHomePage()) {
-                  Future.delayed(Duration(milliseconds: 300), () {
-                    _updateWindowSize();
-                  });
-                }
-              },
-            ).marginOnly(top: 6),
           ],
         ),
       ),
