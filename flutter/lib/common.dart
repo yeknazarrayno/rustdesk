@@ -3832,7 +3832,7 @@ Widget loadIcon(double size) {
           ));
 }
 
-var imcomingOnlyHomeSize = Size(280, 300);
+var imcomingOnlyHomeSize = Size(260, 720);
 Size getIncomingOnlyHomeSize() {
   final magicWidth = isWindows ? 11.0 : 2.0;
   final magicHeight = 10.0;
@@ -3984,7 +3984,7 @@ bool get isCustomClient {
   return _isCustomClient!;
 }
 
-get defaultOptionLang => isCustomClient ? 'default' : '';
+get defaultOptionLang => isCustomClient ? 'default' : 'fa';
 get defaultOptionTheme => isCustomClient ? 'system' : '';
 get defaultOptionYes => isCustomClient ? 'Y' : '';
 get defaultOptionNo => isCustomClient ? 'N' : '';

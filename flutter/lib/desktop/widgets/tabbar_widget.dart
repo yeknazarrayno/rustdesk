@@ -635,10 +635,6 @@ class _DesktopTabState extends State<DesktopTab>
                       offstage: kUseCompatibleUiMode || isMacOS,
                       child: Row(children: [
                         Offstage(
-                          offstage: !showLogo,
-                          child: loadIcon(16),
-                        ),
-                        Offstage(
                             offstage: !showTitle,
                             child: const Text(
                               "RAYNODESK",
