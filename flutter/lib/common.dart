@@ -3984,7 +3984,7 @@ bool get isCustomClient {
   return _isCustomClient!;
 }
 
-get defaultOptionLang => isCustomClient ? 'default' : '';
+get defaultOptionLang => isCustomClient ? 'default' : 'fa';
 get defaultOptionTheme => isCustomClient ? 'system' : '';
 get defaultOptionYes => isCustomClient ? 'Y' : '';
 get defaultOptionNo => isCustomClient ? 'N' : '';
